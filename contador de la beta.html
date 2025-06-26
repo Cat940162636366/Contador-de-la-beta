@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Contador desde las 4 PM</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 100px;
+      font-size: 2rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>Contador desde las 4 PM (hora México)</h1>
+  <div id="countdown">Cargando...</div>
+
+  <script>
+    // Duración del contador: 1 hora y 20 minutos = 80 minutos = 4800000 ms
+    const DURATION = 80 * 60 * 1000;
+
+    // Obtener la zona horaria de México
+    const mexicoTimezone = 'America/Mexico_City';
+
+    // Obtener fecha actual en México
+    function getMexicoTime() {
+      return new Date(new Date().toLocaleString('en-US', { timeZone: mexicoTimezone }));
+    }
+
+    // Crear la hora exacta de inicio: hoy a las 4 PM (16:00) en hora México
+    function getStartTime() {
+      const now = getMexicoTime();
+      const start = new Date(now);
+      start.setHours(16, 0, 0, 0); // 16:00:00.000
+      return start;
+    }
+
+    const countdownEl = document.getElementById('countdown');
+    const startTime = getStartTime().getTime();
+
+    function updateCountdown() {
+      const now = getMexicoTime().getTime();
+      const elapsed = now - startTime;
+      const remaining = DURATION - elapsed;
+
+      if (remaining <= 0) {
+        if (now < startTime) {
+          countdownEl.textContent = "El contador aún no ha comenzado.";
+        } else {
+          countdownEl.textContent = "¡Tiempo terminado!";
+        }
+        return;
+      }
+
+      const hours = Math.floor(remaining / (1000 * 60 * 60));
+      const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
+
+      countdownEl.textContent = `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+    }
+
+    function pad(n) {
+      return n.toString().padStart(2, '0');
+    }
+
+    setInterval(updateCountdown, 1000);
+    updateCountdown();
+  </script>
+</body>
+</html>
